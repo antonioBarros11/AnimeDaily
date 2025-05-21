@@ -5,12 +5,13 @@ import { useEffect, useState } from "react";
 export default function AnimeDetails() {
   const [isLoading, setIsLoading] = useState(true);
   const [animeDetails, setAnimeDetails] = useState();
-
   const { id } = useParams();
-
+  
   const handleAnimeDetails = async () => {
+    console.log(id);
     const response = await getAnimeDetailsById(id);
-    setAnimeDetails(response.data);
+    console.log(response);
+    setAnimeDetails(response);
 
     setIsLoading(false);
   };

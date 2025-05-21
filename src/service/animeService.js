@@ -3,6 +3,8 @@ import axios from "../lib/axiosConfig";
 export async function getAnimeBySeason(season) {
   try {
     const response = await axios.get("/temporada/" + season);
+    console.log(response);
+    console.log('awdawdawd');
     if (response.status !== 200 && response.status !== 204) {
       return {
         error: "No se ha podido optener los animes de temporada",
@@ -18,7 +20,7 @@ export async function getAnimeBySeason(season) {
 
 export async function getAnimeDetailsById(id) {
   try {
-    const response = await axios.get(`/anime/${id}/full`);
+    const response = await axios.get(`/ID/${id}`);
     if (response.status !== 200 && response.status !== 204) {
       return {
         error: "No se ha podido obtener el detalle  de los animes",
