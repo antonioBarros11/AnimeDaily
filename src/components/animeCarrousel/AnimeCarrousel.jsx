@@ -21,7 +21,9 @@ export default function AnimeCarousel({ animes, isLoading }) {
     if (!slider) return;
     const details = slider.track.details;
     setCanScrollLeft(details.rel > 0);
-    setCanScrollRight(details.rel < details.slides.length - details.slidesPerView);
+    setCanScrollRight(
+      details.rel < details.slides.length - details.slidesPerView
+    );
   };
 
   useEffect(() => {
@@ -46,10 +48,11 @@ export default function AnimeCarousel({ animes, isLoading }) {
           : animes.map((anime, i) => (
               <div key={i} className="keen-slider__slide w-auto">
                 <Card
-                  id={anime.malId}
+                  id={anime.id}
                   image={anime.imagenUrl}
                   title={anime.tituloIngles || anime.titulo}
                 />
+                
               </div>
             ))}
       </div>
