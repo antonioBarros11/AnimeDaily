@@ -3,12 +3,12 @@ import axiosInstance from "../lib/axiosConfig";
 export async function authLogin(email,password) {
   try {
     const response = await axiosInstance.post(`/api/auth/login`,{
-        Correo: email,
-        Contraseña: password
+        correo: email,
+        contraseña: password
     });
-    if (response.status !== 200 && response.status !== 204) {
+    if (response.status === 401) {
       return {
-        error: "Error no se a encontrado un usuario con estas credenciales",
+        error: "credenciales no validas",
       };
     }
     return response.token;

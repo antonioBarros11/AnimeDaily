@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getAnimeNews } from "../../service/animeService";
 import NewsSkeleton from "./NewsSkeleton";
+import { getAnimeNews } from "../../service/animeNews";
 
 export default function News() {
   const [news, setNews] = useState([]);
@@ -22,7 +22,7 @@ export default function News() {
   return (
     <div className="flex flex-row flex-wrap justify-center gap-8 mt-10 ">
       {isLoading
-        ? Array.from({ length: 6 }).map((_, i) => (
+        ? Array.from({ length: 9 }).map((_, i) => (
             <div key={i}>
               <NewsSkeleton />
             </div>
@@ -30,26 +30,26 @@ export default function News() {
         : news.map((item, index) => (
             <div
               key={index}
-              className="flex flex-col max-w-sm p-6 space-y-6 overflow-hidden rounded-lg shadow-md dark:bg-gray-50 dark:text-gray-800"
+              className="rounded-xl bg-white shadow-xl shadow-gray-600 overflow-hidden w-full max-w-sm"
             >
-              <div className="flex space-x-4">
-                <div className="flex flex-col space-y-1">
-                  <a>{item.author || "Desconocido"}</a>
-                  <span className="text-xs dark:text-gray-600">
-                    {new Date(item.publishedAt).toLocaleString()}
-                  </span>
+              <a href={item.url} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={item.urlToImage}
+                  alt={item.title}
+                  className="w-full h-60 object-cover"
+                />
+              </a>
+              <div className="w-full p-6">
+                <h5 className="text-xl font-semibold text-gray-900 mb-4">
+                  {item.title}
+                </h5>
+                <p className="text-sm font-medium text-gray-600 mb-4">
+                  {item.description}
+                </p>
+                <div className="text-xs text-gray-500">
+                  <span>{item.author || "Desconocido"}</span> ·{" "}
+                  <span>{new Date(item.publishedAt).toLocaleString()}</span>
                 </div>
-              </div>
-              <div>
-                <a href={item.url} target="_blank">
-                  <img
-                    src={item.urlToImage}
-                    alt={item.title}
-                    className="object-cover w-full mb-4 h-60 sm:h-96 dark:bg-gray-500"
-                  />
-                </a>
-                <h2 className="mb-1 text-xl font-semibold">{item.title}</h2>
-                <p className="text-sm dark:text-gray-600">{item.description}</p>
               </div>
             </div>
           ))}
