@@ -7,7 +7,7 @@ export const getAnimeNews = async () => {
         q: "anime",
         language: "es",
         sortBy: "relevancy",
-        pageSize: 10,
+        pageSize: 12,
       },
     });
 

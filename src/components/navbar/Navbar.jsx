@@ -2,6 +2,9 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useClickOutside } from "../../utils/useClickOutside";
 import LoginPopup from "../loginPopup/LoginPopup";
+import RegisterPopup from "../loginRegister/RegisterPopup";
+import { useUserContext } from "../../context/UserContext";
+import { Cookies } from "react-cookie";
 
 export default function Navbar() {
   const [showLogin, setShowLogin] = useState(false);
@@ -9,6 +12,8 @@ export default function Navbar() {
   const [animateLogin, setAnimateLogin] = useState(false);
   const [animateSignup, setAnimateSignup] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { userData, handleUser } = useUserContext();
+  const cookies = new Cookies();
 
   const loginRef = useClickOutside(() => closeLogin());
   const signupRef = useClickOutside(() => closeSignup());
@@ -17,6 +22,12 @@ export default function Navbar() {
     setShowSignup(false);
     setShowLogin(!showLogin);
     setAnimateLogin(!showLogin);
+  };
+
+  const handleLogout = () => {
+    handleUser(null);
+    
+    cookies.remove("sessionToken");
   };
 
   const openSignup = () => {
@@ -67,24 +78,43 @@ export default function Navbar() {
               to="/anime-search"
               className="text-dm font-semibold text-white hover:text-gray-400"
             >
-              Buscar...
+              Buscar
             </Link>
           </nav>
 
-          <div className="hidden lg:flex gap-4 items-center">
-            <button
-              onClick={openLogin}
-              className="text-dm font-semibold cursor-pointer text-white hover:hover:text-gray-400"
-            >
-              Login
-            </button>
-            <button
-              onClick={openSignup}
-              className="text-dm font-semibold cursor-pointer text-white bg-[#5925DC] px-6 py-2 rounded-full hover:bg-purple-900"
-            >
-              Sign Up
-            </button>
-          </div>
+          {!userData ? (
+            <div className="hidden lg:flex gap-4 items-center">
+              <button
+                onClick={openLogin}
+                className="text-dm font-semibold cursor-pointer text-white hover:hover:text-gray-400"
+              >
+                Login
+              </button>
+              <button
+                onClick={openSignup}
+                className="text-dm font-semibold cursor-pointer text-white bg-[#5925DC] px-6 py-2 rounded-full hover:bg-purple-900"
+              >
+                Sign Up
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-end gap-4">
+                <div className="font-medium dark:text-white">
+                  {userData.username}
+                </div>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="text-sm font-semibold text-white bg-red-500 px-4 py-1 rounded-lg hover:bg-red-600"
+                >
+                  Logout
+                </button>
+              </div>
+            </>
+          )}
 
           <button
             type="button"
@@ -113,7 +143,7 @@ export default function Navbar() {
               className="text-base font-medium text-white hover:text-indigo-500"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Buscar...
+              Buscar
             </Link>
             <Link
               to="/anime-news"
@@ -129,26 +159,46 @@ export default function Navbar() {
             >
               Populares
             </Link>
-            <div className="flex flex-col gap-4  justify-center">
-              <button
-                onClick={() => {
-                  openLogin();
-                  setIsMobileMenuOpen(false);
-                }}
-                className="text-sm font-semibold text-gray-500 hover:text-indigo-500"
-              >
-                Login
-              </button>
-              <button
-                onClick={() => {
-                  openSignup();
-                  setIsMobileMenuOpen(false);
-                }}
-                className="text-sm font-semibold text-white bg-indigo-500 px-4 py-1 rounded-lg hover:bg-indigo-600"
-              >
-                Sign Up
-              </button>
-            </div>
+
+            {!userData ? (
+              <div className="flex flex-col gap-4  justify-center">
+                <button
+                  onClick={() => {
+                    openLogin();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="text-sm font-semibold text-gray-500 hover:text-indigo-500"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => {
+                    openSignup();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="text-sm font-semibold text-white bg-indigo-500 px-4 py-1 rounded-lg hover:bg-indigo-600"
+                >
+                  Sign Up
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-end gap-4">
+                  <div className="font-medium dark:text-white">
+                    {userData.username}
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="text-sm font-semibold text-white bg-red-500 px-4 py-1 rounded-lg hover:bg-red-600"
+                >
+                  Logout
+                </button>
+              </>
+            )}
           </nav>
         )}
 
@@ -162,62 +212,12 @@ export default function Navbar() {
         )}
 
         {showSignup && (
-          <div
-            className={`w-full flex justify-end absolute top-20 right-4 z-50 ${
-              animateSignup ? "fade-in" : "fade-out"
-            }`}
-          >
-            <div
-              ref={signupRef}
-              className="w-[350px] bg-white rounded-3xl shadow-xl p-8"
-            >
-              <div className="flex flex-col items-center gap-4">
-                <div className="flex gap-2 items-center mb-2">
-                  <img src="/logoLogin.png" alt="Logo" className="w-6 h-6" />
-                  <h2 className="text-2xl font-bold text-gray-800">Register</h2>
-                </div>
-                <div className="w-full">
-                  <label className="flex items-center mb-2 text-gray-600 text-sm font-medium">
-                    Nombre de usuario
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Nombre de usuario"
-                    className="block w-full h-11 px-5 py-2.5 bg-white text-base text-gray-900 border border-gray-300 rounded-full placeholder-gray-400 shadow-xs focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                    required
-                  />
-                </div>
-
-                <div className="w-full">
-                  <label className="flex items-center mb-2 text-gray-600 text-sm font-medium">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="Tu correo"
-                    className="block w-full h-11 px-5 py-2 bg-white text-base text-gray-900 border border-gray-300 rounded-full placeholder-gray-400 shadow-xs focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                    required
-                  />
-                </div>
-
-                <div className="w-full">
-                  <label className="flex items-center mb-2 text-gray-600 text-sm font-medium">
-                    Contraseña
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="Tu contraseña"
-                    className="block w-full h-11 px-5 py-2.5 bg-white text-base text-gray-900 border border-gray-300 rounded-full placeholder-gray-400 shadow-xs focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                    required
-                  />
-                </div>
-
-                <button className="w-full h-11 cursor-pointer bg-indigo-600 hover:bg-purple-700 transition-all duration-300 rounded-full shadow-xs text-white text-base font-semibold">
-                  Registrarse
-                </button>
-              </div>
-            </div>
-          </div>
+          <RegisterPopup
+            show={showSignup}
+            onClose={closeSignup}
+            animate={animateSignup}
+            ref={signupRef}
+          />
         )}
       </div>
     </div>

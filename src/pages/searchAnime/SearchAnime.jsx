@@ -37,14 +37,10 @@ export default function SearchAnime() {
   };
 
   useEffect(() => {
-    getAnimeFilters();
-  }, [currentPage]);
-
-  useEffect(() => {
     if (currentPage > 0) {
       setCurrentPage(0);
     } else {
-      getAnimeByFilters();
+      getAnimeFilters();
     }
   }, [
     selectedGender,
@@ -55,22 +51,30 @@ export default function SearchAnime() {
   ]);
 
   useEffect(() => {
-    const getTitle = async () => {
-      setIsLoading(true);
-      if (searchName.trim() !== "") {
-        const result = await getAnimeTitle(searchName);
-        if (!result.error) {
-          setFilteredAnimes(result.content);
-          setTotalPages(result.totalPages || 0);
-        }
-        setFilteredAnimes(result.content);
-        console.log("Título encontrado:", result.content);
-      } else {
-        setFilteredAnimes([]);
-      }
-      setIsLoading(false);
-    };
+    if (!searchName) {
+      getAnimeFilters();
+    } else {
+      getTitle();
+    }
+  }, [currentPage]);
 
+  const getTitle = async () => {
+    setIsLoading(true);
+    if (searchName.trim() !== "") {
+      const result = await getAnimeTitle(searchName);
+      if (!result.error) {
+        setFilteredAnimes(result.content);
+        setTotalPages(result.totalPages || 0);
+      }
+      setFilteredAnimes(result.content);
+      console.log("Título encontrado:", result.content);
+    } else {
+      getAnimeFilters();
+    }
+    setIsLoading(false);
+  };
+  useEffect(() => {
+    currentPage > 0 && setCurrentPage(0);
     getTitle();
   }, [searchName]);
 
@@ -226,7 +230,7 @@ export default function SearchAnime() {
         />
       </div>
       <div className="flex flex-col min-h-screen items-center px-4">
-        <div className="flex flex-wrap gap-10 justify-start w-full max-w-6xl mt-4 flex-grow">
+        <div className="flex flex-wrap gap-10 justify-center md:justify-start  w-full max-w-6xl mt-4 flex-grow">
           {isLoading ? (
             Array.from({ length: 20 }).map((_, i) => (
               <div key={i} className="w-[180px]">
@@ -235,12 +239,12 @@ export default function SearchAnime() {
             ))
           ) : filteredAnimes.length > 0 ? (
             filteredAnimes.map((anime) => (
-              <Card
-                key={anime.id}
-                id={anime.id}
-                image={anime.imagenUrl}
-                title={anime.titulo}
-              />
+                <Card
+                  key={anime.id}
+                  id={anime.id}
+                  image={anime.imagenUrl}
+                  title={anime.titulo}
+                />
             ))
           ) : (
             <p className="text-white font-bold text-2xl mt-20 flex justify-center">

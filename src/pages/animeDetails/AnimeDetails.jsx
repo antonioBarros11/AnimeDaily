@@ -164,6 +164,38 @@ export default function AnimeDetails() {
                 </div>
               </div>
             </div>
+            <div className="flex flex-col items-center justify-center mt-16">
+              <p className="text-white text-xl font-semibold mb-4">
+                Disponible en:
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                {animeDetails.streaming.split(",").map((platform, index) => {
+                  const trimmed = platform.trim();
+                  const domain =
+                    trimmed.toLowerCase().replace(/\s+/g, "") + ".com";
+                  const url = `https://${domain}`;
+
+                  return (
+                    <a
+                      key={index}
+                      href={url}
+                      target="_blank"
+                      rel="link de pagina streaming"
+                      title={trimmed}
+                    >
+                      <img
+                        src={`https://logo.clearbit.com/${domain}`}
+                        alt={trimmed}
+                        className="object-contain bg-white rounded-xl p-2 shadow-md hover:shadow-lg transition-all duration-300 w-16 h-16 flex items-center justify-center"
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                        }}
+                      />
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
           </section>
         </div>
       )}

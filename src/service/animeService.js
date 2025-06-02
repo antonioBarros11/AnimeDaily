@@ -1,12 +1,30 @@
 import axios from "../lib/axiosConfig";
 
+export async function getAnimeByPopular() {
+  try {
+    const response = await axios.get("/api/animes/mejor-puntuados");
+    if (response.status !== 200 && response.status !== 204) {
+      return {
+        error: "No se ha podido optener los animes de temporada",
+      };
+    }
+    return response.data;
+  } catch (error) {
+    return {
+      error: "Error al intentar recuperar los animes de temporadas",
+    };
+  }
+}
+
 {
   /**Animes por  temporada  */
 }
 
-export async function getAnimeBySeason(season) {
+export async function getAnimeBySeason(year, season) {
   try {
-    const response = await axios.get("/api/animes/temporada/" + season);
+    const response = await axios.get(
+      `/api/anime/search?anio=${year}&temporada=${season}`
+    );
     if (response.status !== 200 && response.status !== 204) {
       return {
         error: "No se ha podido optener los animes de temporada",
@@ -59,8 +77,6 @@ export async function getAnimeDetailsById(id) {
     };
   }
 }
-
-
 
 export async function getAnimeByFilters(filters, page = 0, size = 20) {
   const params = new URLSearchParams();

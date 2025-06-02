@@ -6,9 +6,17 @@ import CardSkeleton from "../card/CardSkeleton";
 
 export default function AnimeCarousel({ animes, isLoading }) {
   const [sliderRef, instanceRef] = useKeenSlider({
+    breakpoints: {
+      "(min-width: 1024px)": {
+        slides: { perView: 8, spacing: 12 },
+      },
+      "(min-width: 768px)": {
+        slides: { perView: 6, spacing: 1 },
+      },
+    },
     slides: {
-      perView: 6,
-      spacing: 12,
+      perView: 1.5,
+      spacing: 5,
     },
     mode: "free-snap",
   });
@@ -38,21 +46,26 @@ export default function AnimeCarousel({ animes, isLoading }) {
 
   return (
     <div className="relative">
-      <div ref={sliderRef} className="keen-slider py-3">
+      <div ref={sliderRef} className="keen-slider p-2">
         {isLoading
           ? Array.from({ length: 10 }).map((_, i) => (
-              <div key={i} className="keen-slider__slide w-auto">
+              <div
+                key={i}
+                className="keen-slider__slide w-[180px] flex-shrink-0"
+              >
                 <CardSkeleton />
               </div>
             ))
           : animes.map((anime, i) => (
-              <div key={i} className="keen-slider__slide w-auto">
+              <div
+                key={i}
+                className="keen-slider__slide w-[180px] flex-shrink-0"
+              >
                 <Card
                   id={anime.id}
                   image={anime.imagenUrl}
                   title={anime.tituloIngles || anime.titulo}
                 />
-                
               </div>
             ))}
       </div>
